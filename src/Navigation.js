@@ -21,11 +21,11 @@ export const Navigation = (props) => {
               <NavLink href="/#contact_us">CONTACT</NavLink>
             </NavItem>
             <NavItem>
-              
+
               <NavLink href="/profile"><img src={profile} alt="profile" width="40" height="40"/></NavLink>
             </NavItem>
             <NavItem>
-              <NavLink href="/"><img src={heart} alt="heart" width="40" height="40"/></NavLink>
+              <NavLink href="/profile#favorites"><img src={heart} alt="heart" width="40" height="40"/></NavLink>
             </NavItem>
             <NavItem>
               <NavLink href="/search" className="navitem"><img src={search} alt="search" width="40" height="40"/> </NavLink>

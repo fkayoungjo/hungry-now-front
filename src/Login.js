@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Button, Row, Col, FormGroup, Label, Input, Form, NavLink, FormText} from 'reactstrap';
+import { connect } from "react-redux";
 
 
 class Login extends Component {

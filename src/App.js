@@ -13,14 +13,45 @@ class App extends Component {
   state = {
     time: null,
     hour: null,
-    user: null
+    user: null,
+    favorites: [],
+    userFavs: []
+
   }
 
   componentDidMount() {
     this.getTime()
     this.getUser()
+    this.getFavorites()
+    this.getUserFavs()
   }
 
+
+
+  handleClick = (e)=> {
+    console.log(e.target.name, e.target.id, this.state.user.id)
+      fetch("http://localhost:3000/api/v1/favorites",{
+        method: 'POST',
+        body: JSON.stringify({
+          label: e.target.name,
+          user_id: this.state.user.id,
+          url: e.target.id
+
+        }),
+        headers:{
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
+        Authorization: `Bearer ${localStorage.getItem("token")}`
+       }
+      })
+    .then(res=>res.json())
+    .then(fav=>{
+     let newArr=[...this.state.favorites, fav]
+      this.setState({
+        favorites: newArr
+      })
+  })
+    }
 
   signupFormSubmitHandler = (e, userInfo) => {
     e.preventDefault();
@@ -33,6 +64,7 @@ class App extends Component {
     e.preventDefault();
     this.signinUser(userInfo);
     this.props.history.push("/profile");
+    window.location.reload();
   };
 
   createUser = userInfo => {
@@ -79,6 +111,63 @@ class App extends Component {
  }
  }
 
+ getFavorites = () => {
+   let token = localStorage.getItem("token")
+   if (token !== null ) {
+   return fetch('http://localhost:3000/api/v1/favorites', {
+   method: 'GET',
+   headers: {
+     "Content-Type": "application/json",
+     Action: "application/json",
+     Authorization: `Bearer ${token}`
+   }
+ })
+ .then(res => res.json())
+ .then(res => {
+   this.setState({favorites: res})
+ })
+}
+}
+
+ getUserFavs = () => {
+   let token = localStorage.getItem("token")
+   if (token !== null ) {
+   return fetch("http://localhost:3000/api/v1/favorites",{
+    method: 'GET',
+    headers:{
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      Authorization: `Bearer ${token}`
+    }
+  })
+  .then(res=>res.json())
+  .then(arrayOfFavorites=>{
+    let myFavs=[...this.state.favorites].filter(favorite=>{
+      return favorite.user_id === this.state.user.id
+    })
+    this.setState({
+    userFavs: myFavs
+      })
+
+    })
+}
+}
+
+deleteFav = (e) => {
+  let token = localStorage.getItem("token")
+  if (token !== null ) {
+   e.preventDefault()
+   fetch(`http://localhost:3000/api/v1/favorites/${e.target.id}`,{
+     method: 'DELETE',
+     headers:{
+       'Content-Type': 'application/json',
+       Accept: 'application/json',
+       Authorization: `Bearer ${token}`
+     }
+   })
+   .then(window.location.reload())
+ }
+}
 
 
   signinUser = userInfo => {
@@ -135,8 +224,8 @@ class App extends Component {
           </header>
           <Switch>
           <Route exact path="/" component={Home} />
-          <Route exact path='/search' render={(props) => <Search {...props} time={this.state.time} hour={this.state.hour} user={this.state.user}/>} />
-          <Route exact path= '/profile' render={()=> (this.state.user) ? <Profile user={this.state.user} logout={this.handleLogOut}/> : <Login loginSubmitHandler={this.loginSubmitHandler}/>}/>
+          <Route exact path='/search' render={(props) => <Search {...props} time={this.state.time} hour={this.state.hour} handleClick={this.handleClick} user={this.state.user}/>} />
+          <Route exact path= '/profile' render={()=> (this.state.user) ? <Profile user={this.state.user} logout={this.handleLogOut} userFavs={this.state.userFavs} deleteFav={this.deleteFav}/> : <Login loginSubmitHandler={this.loginSubmitHandler}/>}/>
           <Route exact path="/signup" render={() => (
         <SignUp signupFormSubmitHandler={this.signupFormSubmitHandler}/>
         )

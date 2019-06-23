@@ -17,7 +17,8 @@ class Search extends Component {
     cuisine: [],
     results: null,
     modal: false,
-    coordinates: {}
+    coordinates: {},
+
   }
 
   setType = (e) => {
@@ -202,7 +203,7 @@ class Search extends Component {
     })
   }
 }else {
-  
+
   this.props.history.push('/login')
 
 }
@@ -247,13 +248,13 @@ class Search extends Component {
           <ModalHeader toggle={this.toggle}>Your Matches</ModalHeader>
 
             {this.state.type === "cook"  &&
-            <Results results={this.state.results}/>
+            <Results results={this.state.results} user={this.props.user} handleClick={this.props.handleClick}/>
             }
             {this.state.type === "order"  &&
-            <ZomatoResults results={this.state.results}/>
+            <ZomatoResults results={this.state.results} user={this.props.user} handleClick={this.props.handleClick}/>
             }
             {this.state.type === "eatout"  &&
-            <ZomatoResults results={this.state.results}/>
+            <ZomatoResults results={this.state.results} user={this.props.user} handleClick={this.props.handleClick}/>
             }
 
             {this.props.user === null &&

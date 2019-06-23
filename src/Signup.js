@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import {Button, Col, Row, Form, FormGroup, Label, Input } from 'reactstrap';
+import { connect } from "react-redux";
 
 
 class SignUp extends Component {
@@ -15,6 +16,8 @@ class SignUp extends Component {
       [e.target.name]: e.target.value
     });
   };
+
+  
 
 
   render() {
